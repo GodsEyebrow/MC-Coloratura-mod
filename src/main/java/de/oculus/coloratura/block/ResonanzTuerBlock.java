@@ -11,12 +11,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-/**
- * Die Resonanztuer wird nicht per Hand geoeffnet, sondern ausschliesslich durch
- * das erfolgreiche Loesen eines Klang-Raetsels (siehe KlangSequenzManager).
- * Solange OFFEN=false ist sie eine solide Wand; ist sie offen, hat sie keine
- * Kollision mehr (VoxelShapes.empty()), sodass man hindurchgehen kann.
- */
 public class ResonanzTuerBlock extends Block {
 
 	public static final BooleanProperty OFFEN = BooleanProperty.of("offen");
@@ -32,12 +26,12 @@ public class ResonanzTuerBlock extends Block {
 	}
 
 	@Override
-	protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return state.get(OFFEN) ? VoxelShapes.empty() : VoxelShapes.fullCube();
 	}
 
 	@Override
-	protected VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return getOutlineShape(state, world, pos, context);
 	}
 
