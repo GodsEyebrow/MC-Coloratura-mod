@@ -1,0 +1,13 @@
+{
+  "block.coloratura.klangblock": "Sound Block",
+  "block.coloratura.resonanz_tuer": "Resonance Door",
+  "item.coloratura.resonanzkompass": "Resonance Compass",
+  "itemGroup.coloratura": "Coloratura",
+  "key.coloratura.toggle_blind": "Toggle blind mode",
+  "key.categories.coloratura": "Coloratura",
+  "coloratura.hud.blind_active": "Blind mode active - navigate by sound",
+  "coloratura.message.discovered": "New sound source discovered: %s blocks away",
+  "coloratura.message.sequence_correct": "Resonance matches...",
+  "coloratura.message.sequence_wrong": "Dissonance! The sequence resets.",
+  "coloratura.message.sequence_complete": "The resonance door opens."
+}

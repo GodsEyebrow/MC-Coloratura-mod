@@ -1,0 +1,1 @@
+{ "parent": "block/orientable", "textures": { "front": "coloratura:block/resonanz_tuer_offen", "side": "coloratura:block/resonanz_tuer_offen", "top": "coloratura:block/resonanz_tuer_offen" } }

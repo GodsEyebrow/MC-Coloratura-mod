@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "offen=false": { "model": "coloratura:block/resonanz_tuer" },
+    "offen=true": { "model": "coloratura:block/resonanz_tuer_offen" }
+  }
+}

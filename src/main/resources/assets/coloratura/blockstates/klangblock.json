@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "aktiviert=false": { "model": "coloratura:block/klangblock" },
+    "aktiviert=true": { "model": "coloratura:block/klangblock_aktiv" }
+  }
+}
