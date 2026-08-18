@@ -69,11 +69,4 @@ public class KlangBlock extends BlockWithEntity {
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		return checkType(type, ModBlockEntities.KLANGBLOCK_ENTITY, KlangBlockEntity::tick);
 	}
-
-	@Nullable
-	@SuppressWarnings("unchecked")
-	private static <A extends BlockEntity, E extends BlockEntity> BlockEntityTicker<A> checkType(
-			BlockEntityType<A> gegebenerTyp, BlockEntityType<E> erwarteterTyp, BlockEntityTicker<? super E> ticker) {
-		return erwarteterTyp == gegebenerTyp ? (BlockEntityTicker<A>) ticker : null;
-	}
 }
