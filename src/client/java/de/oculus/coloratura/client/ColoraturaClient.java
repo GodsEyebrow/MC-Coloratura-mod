@@ -15,26 +15,43 @@ import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Client-seitiges Herzstueck: verwaltet
- *  - den Blindmodus (Taste B) - schwaerzt den Bildschirm komplett,
- *  - das Klanggedaechtnis (welche Klangquellen wurden je entdeckt + ihre Tonhoehe),
- *  - und delegiert das eigentliche Zeichnen an KlangHudRenderer.
+ * Client-seitiges Herzstueck, umgebaut auf das Prinzip von "Blind Touch"
+ * (statt des frueheren Coloratura-Radar/Gedaechtnis-Ansatzes):
  *
- * Genau wie in Coloratura soll man im Blindmodus vollstaendig auf 3D-Audio
- * angewiesen sein; die Radar-Pfeile im HUD entsprechen dem "Objective Button"/
- * Memory-System aus dem Vorbild - ein reduziertes, nicht-visuelles Hilfsmittel,
- * das nur Richtung/Distanz zu bereits entdeckten Klaengen zeigt, aber niemals
- * das Bild selbst.
+ *  - Blindmodus ist jetzt der GRUNDZUSTAND (blindModusAktiv startet auf true),
+ *    nicht mehr ein optionales Extra. Taste B bleibt als Testschalter erhalten,
+ *    damit man beim Bauen/Debuggen auch mal etwas sehen kann.
+ *  - Es gibt KEIN dauerhaftes Gedaechtnis mehr. Ein Tipp mit dem Blindenstock
+ *    "ertastet" Objekte im Kegel vor einem nur fuer ENTHUELLUNG_DAUER_TICKS -
+ *    danach verschwinden sie wieder aus der Anzeige, genau wie die kurze
+ *    Sonar-Ripple-Enthuellung im Vorbild. Man muss also wiederholt tippen,
+ *    um sich zu orientieren, statt sich auf ein einmal aufgebautes Kartenbild
+ *    zu verlassen.
  */
 public class ColoraturaClient implements ClientModInitializer {
 
-	/** BlockPos -> Tonhoehe (note), aller bisher entdeckten Klangquellen. */
-	public static final Map<BlockPos, Integer> KLANG_GEDAECHTNIS = new LinkedHashMap<>();
+	/** Wie lange (in Ticks) ein ertastetes Objekt im HUD sichtbar bleibt,
+	 * bevor es wieder "vergessen" wird. 60 Ticks = 3 Sekunden. */
+	public static final int ENTHUELLUNG_DAUER_TICKS = 60;
 
-	public static boolean blindModusAktiv = false;
+	/** BlockPos -> Tick-Zeitpunkt, bis zu dem dieses Objekt noch als "ertastet" gilt. */
+	public static final Map<BlockPos, Long> AKTUELLE_ENTHUELLUNGEN = new LinkedHashMap<>();
+
+	/** Zaehler, der bei jedem Client-Tick hochgezaehlt wird - dient als
+	 * einfache "Uhrzeit" fuer den Ablauf der Enthuellungen. */
+	private static long tickZaehler = 0L;
+
+	public static long getTickZaehler() {
+		return tickZaehler;
+	}
+
+	/** Blindmodus ist der Grundzustand des Mods (analog Blind Touch), nicht
+	 * mehr ein optionales Extra wie zuvor beim Coloratura-Vorbild. */
+	public static boolean blindModusAktiv = true;
 
 	private static KeyBinding toggleBlindKey;
 
@@ -48,15 +65,21 @@ public class ColoraturaClient implements ClientModInitializer {
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			tickZaehler++;
+
 			while (toggleBlindKey.wasPressed()) {
 				blindModusAktiv = !blindModusAktiv;
 				if (client.player != null) {
-					client.player.sendMessage(
-							Text.translatable(blindModusAktiv
-									? "coloratura.hud.blind_active"
-									: "coloratura.hud.blind_active"),
-							true
-					);
+					client.player.sendMessage(Text.translatable("coloratura.hud.blind_active"), true);
+				}
+			}
+
+			// Abgelaufene Enthuellungen entfernen - das ist der Kern des
+			// "kein dauerhaftes Gedaechtnis"-Prinzips aus Blind Touch.
+			Iterator<Map.Entry<BlockPos, Long>> it = AKTUELLE_ENTHUELLUNGEN.entrySet().iterator();
+			while (it.hasNext()) {
+				if (it.next().getValue() <= tickZaehler) {
+					it.remove();
 				}
 			}
 		});
@@ -75,24 +98,17 @@ public class ColoraturaClient implements ClientModInitializer {
 						neu.put(pos, note);
 					}
 					client.execute(() -> {
-						boolean neuEntdeckt = false;
-						for (Map.Entry<BlockPos, Integer> entry : neu.entrySet()) {
-							if (!KLANG_GEDAECHTNIS.containsKey(entry.getKey())) {
-								neuEntdeckt = true;
-							}
-							KLANG_GEDAECHTNIS.put(entry.getKey(), entry.getValue());
-						}
-						if (neuEntdeckt && client.player != null) {
-							client.player.sendMessage(
-									Text.translatable("coloratura.message.discovered",
-											KLANG_GEDAECHTNIS.size()),
-									true
-							);
+						long ablaufZeitpunkt = tickZaehler + ENTHUELLUNG_DAUER_TICKS;
+						for (BlockPos pos : neu.keySet()) {
+							// Jeder erneute Treffer im Kegel verlaengert die Anzeige wieder -
+							// solange man den Stock auf ein Objekt gerichtet haelt, bleibt
+							// es "ertastet".
+							AKTUELLE_ENTHUELLUNGEN.put(pos, ablaufZeitpunkt);
 						}
 					});
 				}
 		);
 
-		ColoraturaMod.LOGGER.info("[Coloratura] Client-Komponenten (Blindmodus, HUD, Klanggedaechtnis) bereit");
+		ColoraturaMod.LOGGER.info("[Coloratura] Client-Komponenten (Blindenstock-Enthuellung, HUD) bereit - Blind-Touch-Modus");
 	}
 }

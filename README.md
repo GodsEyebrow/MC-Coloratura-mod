@@ -23,7 +23,44 @@ src/client/java/...    Clientseitige Logik (HUD, Blindmodus, Klanggedächtnis, K
 src/main/resources/    fabric.mod.json, Sprachen, Modelle, Texturen
 ```
 
-## Setup & Bauen
+## Automatischer Build per GitHub Actions (empfohlen, wenn du kein lokales Java/Gradle-Setup willst)
+
+Dieses Projekt enthält bereits `.github/workflows/build.yml`. GitHub-Runner
+haben (anders als diese Sandbox hier) vollen Internetzugriff auf die
+Fabric-/Mojang-Server und können den Mod komplett automatisch bauen.
+
+**So geht's (einmalig, ca. 5 Minuten):**
+
+1. Auf https://github.com/new ein neues (leeres) Repository anlegen, z.B.
+   `coloratura-mod` (öffentlich oder privat, beides funktioniert).
+2. Dieses entpackte Projektverzeichnis dort hochladen. Am einfachsten per
+   Git:
+   ```
+   cd coloratura-mod
+   git init
+   git add .
+   git commit -m "Coloratura-Mod"
+   git branch -M main
+   git remote add origin https://github.com/<dein-nutzername>/coloratura-mod.git
+   git push -u origin main
+   ```
+   (Alternativ: auf der GitHub-Repo-Seite "uploading an existing file" nutzen
+   und den Ordnerinhalt per Drag & Drop hochladen.)
+3. Sobald der Push durch ist, startet der Workflow automatisch. Fortschritt
+   siehst du im Reiter **Actions** deines Repos.
+4. Nach ca. 2-4 Minuten (grüner Haken) auf den Workflow-Lauf klicken → unten
+   bei **Artifacts** liegt `coloratura-mod-jar` zum Download bereit (als ZIP,
+   enthält die fertige `.jar`).
+5. Die `.jar` aus dem ZIP in deinen `.minecraft/mods/`-Ordner legen (zusammen
+   mit Fabric Loader + Fabric API für 1.20.1).
+
+Falls der Build fehlschlägt (z.B. weil sich Loom-/Yarn-/Fabric-API-Versionen
+inzwischen geändert haben), zeigt dir der rote Log-Eintrag im Actions-Tab
+genau, welche Zeile in `gradle.properties` oder `build.gradle` angepasst
+werden muss - meist reicht ein Blick auf https://fabricmc.net/develop/ für
+aktuelle Versionsnummern.
+
+## Setup & lokales Bauen (Alternative)
 
 Dieses Projekt wurde **nicht** in dieser Sandbox kompiliert, da hier kein
 Netzwerkzugriff auf die Fabric-/Mojang-Server besteht. Zum Bauen lokal:

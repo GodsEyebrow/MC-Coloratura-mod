@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 
 public final class ModItems {
 
-	public static final Item RESONANZKOMPASS = new ResonanzKompassItem(
+	public static final Item BLINDENSTOCK = new BlindenstockItem(
 			new Item.Settings().maxCount(1)
 	);
 
@@ -18,8 +18,8 @@ public final class ModItems {
 	}
 
 	public static void register() {
-		Registry.register(Registries.ITEM, Identifier.of(ColoraturaMod.MOD_ID, "resonanzkompass"), RESONANZKOMPASS);
+		Registry.register(Registries.ITEM, Identifier.of(ColoraturaMod.MOD_ID, "blindenstock"), BLINDENSTOCK);
 
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(RESONANZKOMPASS));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(BLINDENSTOCK));
 	}
 }

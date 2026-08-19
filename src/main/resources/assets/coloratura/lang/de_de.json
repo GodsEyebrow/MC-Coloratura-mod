@@ -1,12 +1,11 @@
 {
-  "block.coloratura.klangblock": "Klangblock",
-  "block.coloratura.resonanz_tuer": "Resonanztuer",
-  "item.coloratura.resonanzkompass": "Resonanzkompass",
+  "block.coloratura.klangblock": "Klangobjekt",
+  "block.coloratura.resonanz_tuer": "Verschlossene Tuer",
+  "item.coloratura.blindenstock": "Blindenstock",
   "itemGroup.coloratura": "Coloratura",
-  "key.coloratura.toggle_blind": "Blindmodus umschalten",
+  "key.coloratura.toggle_blind": "Blindmodus umschalten (Testschalter)",
   "key.categories.coloratura": "Coloratura",
-  "coloratura.hud.blind_active": "Blindmodus aktiv - navigiere per Klang",
-  "coloratura.message.discovered": "Neue Klangquelle entdeckt: %s Bloecke entfernt",
+  "coloratura.hud.blind_active": "Blindmodus umgeschaltet",
   "coloratura.message.sequence_correct": "Resonanz stimmt ueberein...",
   "coloratura.message.sequence_wrong": "Dissonanz! Die Sequenz setzt sich zurueck.",
   "coloratura.message.sequence_complete": "Die Resonanztuer oeffnet sich."

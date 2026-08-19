@@ -32,7 +32,7 @@ public final class ColoraturaNetworking {
 
 	public static void registerServerReceivers() {
 		// Aktuell werden keine C2S-Pakete benoetigt: das Anpingen laeuft ueber die
-		// normale Item#use()-Serverlogik in ResonanzKompassItem. Dieser Platzhalter
+		// normale Item#use()-Serverlogik in BlindenstockItem. Dieser Platzhalter
 		// existiert, damit spaetere C2S-Kommunikation (z.B. Blindmodus-Sync) hier
 		// zentral registriert werden kann.
 	}
